@@ -1,0 +1,52 @@
+xuanketime:
+    startTime: 2021-06-01
+    endTime: 2021-06-10
+    tuikeTime: 2021-06-14
+
+
+spring:
+    thymeleaf:
+        prefix: classpath:/templates/
+        suffix: .html
+        check-template-location: true
+        encoding: utf-8
+        cache: false
+
+    datasource:
+        url: jdbc:mysql://localhost:3306/sskplus?currentSchema=sys&stringtype=unspecified
+        username: root
+        password: Gepoint
+        driver-class-name: com.mysql.jdbc.Driver
+
+        druid:
+            aop-patterns: com.lzs.ssk.*  #监控SpringBean
+            filters: stat,wall     # 底层开启功能，stat（sql监控），wall（防火墙）
+
+            stat-view-servlet:   # 配置监控页功能
+                enabled: true
+                login-username: admin
+                login-password: admin
+                resetEnable: false
+
+            web-stat-filter:  # 监控web
+                enabled: true
+                urlPattern: /*
+                exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+
+
+            filter:
+                stat:    # 对上面filters里面的stat的详细配置
+                    slow-sql-millis: 1000
+                    logSlowSql: true
+                    enabled: true
+                wall:
+                    enabled: true
+                    config:
+                        drop-table-allow: false
+
+
+
+
+mybatis-plus:
+    configuration:
+        map-underscore-to-camel-case: true

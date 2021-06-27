@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="keywords"
+          content="admin, dashboard, bootstrap, template, flat, modern, theme, responsive, fluid, retina, backend, html5, css, css3">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>admin页面 </title>
+    <!--dynamic table-->
+    <link th:href="@{/js/advanced-datatable/css/demo_page.css}" rel="stylesheet"/>
+    <link th:href="@{/js/advanced-datatable/css/demo_table.css}" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/js/data-tables/DT_bootstrap.css}"/>
+
+
+    <div th:include="/student/common::commonheader"></div>
+</head>
+
+<body class="sticky-header">
+<section>
+    <!-- left side start-->
+    <div th:replace="/admin/common::leftmenu"></div>
+    <!-- left side end-->
+
+    <!-- main content start-->
+    <div class="main-content">
+
+        <!-- header section start-->
+        <div th:replace="/admin/common::headermenu"></div>
+        <!-- page heading start-->
+        <div class="page-heading">
+            <h3>
+                课程管理
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">课程管理</a>
+                </li>
+                <li>
+                    <a href="#">课程管理列表</a>
+                </li>
+                <li class="active">课程审核列表</li>
+            </ul>
+        </div>
+        <!-- page heading end-->
+
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-sm-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            课程审核列表
+                            <span class="tools pull-right">
+                <a href="javascript:;" class="fa fa-chevron-down"></a>
+                <a href="javascript:;" class="fa fa-times"></a>
+             </span>
+                        </header>
+                        <div class="panel-body">
+                            <div class="adv-table">
+                                <div class="span6">
+                                    <div >
+                                        <form class="form-inline" th:action="@{/admin/checkCourse}" method="post">
+                                            <div class="form-group">
+                                                <input type="text" name="schoolTerm" placeholder="请输入学期......">
+                                                <input type="text" name="courseName" placeholder="请输入课程名称......">
+                                                <input type="text" name="studentId" placeholder="请输入学生编号......">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">搜索</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <table class="display table table-bordered table-striped" id="dynamic-table">
+                                    <span style="color: red">[[${param.msg}]]</span><br>
+                                    <span style="color: red;">[[${msg}]]</span>
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>学生编号</th>
+                                        <th>当前学期</th>
+                                        <th>课程名称</th>
+                                        <th>教师名称</th>
+                                        <th>课程学分</th>
+                                        <th>课程学时</th>
+                                        <th>上课时间</th>
+                                        <th>上课地点</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="courseId" role="alert" aria-live="polite" aria-relevant="all">
+                                    <tr class="gradeX odd" th:each="c,sata : ${list}">
+                                        <td th:text="${sata.count}"></td>
+                                        <td th:text="${c.studentId}"></td>
+                                        <td th:text="${c.currentTerm}"></td>
+                                        <td th:text="${c.courseName}"></td>
+                                        <td th:text="${c.teacherName}"></td>
+                                        <td th:text="${c.courseCredit}"></td>
+                                        <td th:text="${c.courseHours}"></td>
+                                        <td th:text="${c.goTime}"></td>
+                                        <td th:text="${c.goPlace}"></td>
+                                        <td>
+                                            <button th:if="${c.statu==0}">
+                                                <a style="color: blue" th:href="@{/admin/goCheck/{id}(id=${c.id},statu=1)}">批准选课</a>
+                                                <a style="color: red" th:href="@{/admin/goCheck/{id}(id=${c.id},statu=2)}">驳回</a>
+                                            </button>
+                                            <button th:if="${c.statu==3}">
+                                                <a style="color: red" th:href="@{/admin/goCheck/{id}(id=${c.id},statu=3)}">批准退课</a>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!--body wrapper end-->
+
+
+    </div>
+</section>
+
+<!-- Placed js at the end of the document so the pages load faster -->
+<div th:replace="/student/common::commonscript"></div>
+
+
+
+</body>
+</html>

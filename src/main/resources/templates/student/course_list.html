@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="keywords"
+          content="admin, dashboard, bootstrap, template, flat, modern, theme, responsive, fluid, retina, backend, html5, css, css3">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>student页面 </title>
+    <!--dynamic table-->
+    <link th:href="@{/js/advanced-datatable/css/demo_page.css}" rel="stylesheet"/>
+    <link th:href="@{/js/advanced-datatable/css/demo_table.css}" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/js/data-tables/DT_bootstrap.css}"/>
+
+
+    <div th:include="/student/common::commonheader"></div>
+</head>
+
+<body class="sticky-header">
+<div class="modal fade" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" >选课</h4>
+                <h5 style="color: red" id="msg"></h5>
+            </div>
+            <div class="modal-body">
+                <table id="course_table" class="display table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>课程名称</th>
+                        <th>教师名称</th>
+                        <th>课程学分</th>
+                        <th>课程学时</th>
+                        <th>课程人数剩余容量</th>
+                        <th>上课时间</th>
+                        <th>上课地点</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="xuanCourseId" role="alert" aria-live="polite" aria-relevant="all">
+
+                    </tbody>
+                </table>
+                <div class="row">
+                    <!--分页文字信息-->
+                    <div class="col-md-4" id="page_info_area">
+
+                    </div>
+                    <!--分页条信息-->
+                    <div class="col-md-4 dataTables_paginate paging_bootstrap pagination" id="page_nav_area">
+                        <ul>
+                            <li class="prev" id="prev">← 前一页</li>
+                            <li class="next" id="next">后一页 →</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <!--<button type="button" class="btn btn-primary" id="score_sub">确认</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+<section>
+    <!-- left side start-->
+    <div th:replace="/student/common::leftmenu"></div>
+    <!-- left side end-->
+
+    <!-- main content start-->
+    <div class="main-content">
+
+        <!-- header section start-->
+        <div th:replace="/student/common::headermenu"></div>
+        <!-- page heading start-->
+        <div class="page-heading">
+            <h3>
+                课程管理
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">课程管理</a>
+                </li>
+                <li>
+                    <a href="#">课程管理列表</a>
+                </li>
+                <li class="active">课程选择列表</li>
+            </ul>
+        </div>
+        <!-- page heading end-->
+
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-sm-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            课程选择列表
+                            <span class="tools pull-right">
+                <a href="javascript:;" class="fa fa-chevron-down"></a>
+                <a href="javascript:;" class="fa fa-times"></a>
+             </span>
+                        </header>
+                        <div class="panel-body">
+                            <div class="adv-table">
+                                <div class="span6">
+                                    <div id="dynamic-table_length" class="dataTables_length">
+                                        专业：[[${session.loginUser.userMajor}]]
+                                        当前学期：[[${session.loginUser.currentTerm}]]
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="dataTables_filter" id="dynamic-table_filter">
+                                        <form class="form-inline" th:action="@{/student/xuanKe/{userId}(userId=${session.loginUser.userId})}" method="post">
+                                            <div class="form-group">
+                                                <label class="sr-only" for="exampleInputAmount"></label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="exampleInputAmount" name="courseName" placeholder="请输入课程名......">
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">搜索</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <table class="display table table-bordered table-striped" id="dynamic-table">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>专业</th>
+                                        <th>当前学期</th>
+                                        <th>课程名称</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="courseId" role="alert" aria-live="polite" aria-relevant="all">
+                                    <tr class="gradeX odd" th:each="c,sata : ${page.records}">
+                                        <td th:text="${sata.count}"></td>
+                                        <td th:text="${c.major}"></td>
+                                        <td th:text="${c.schoolTerm}"></td>
+                                        <td th:text="${c.courseName}"></td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm coursebtn"  th:id="${c.courseName}">选课</button>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                                <div id="fenYe" class="row-fluid">
+                                    <div class="span6">
+                                        <div class="dataTables_info" id="hidden-table-info_info">当前第 [[${page.current}]]
+                                            页 总计 [[${page.pages}]] 页 共 [[${page.total}]]条记录
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="dataTables_paginate paging_bootstrap pagination">
+                                            <ul>
+                                                <li th:class="${page.current==1?'prev disabled':''}"><a th:href="@{/student/xuanKe/{userId}(userId=${session.loginUser.userId},pn=${page.getCurrent()-1})}">← 前一页</a></li>
+                                                <li th:class="${num==page.current?'active':''}" th:each="num:${#numbers.sequence(1,5)}">
+                                                    <a th:href="@{/student/xuanKe/{userId}(userId=${session.loginUser.userId},pn=${num})}">[[${num}]]</a>
+                                                </li>
+                                                <li class="next"><a th:href="@{/student/xuanKe/{userId}(userId=${session.loginUser.userId},pn=${page.getCurrent()+1})}">后一页 → </a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!--body wrapper end-->
+
+
+    </div>
+</section>
+
+<!-- Placed js at the end of the document so the pages load faster -->
+<div th:replace="/student/common::commonscript"></div>
+
+
+<script th:inline="javascript">
+    $(document).on("click",".coursebtn",function () {
+        var studentId = [[${session.loginUser.userId}]];
+        var courseName = $(this).attr("id");
+        var totalRecord;
+        var currentPage;
+        $(function () {
+            to_page(1);
+        });
+        function to_page(pageNum){
+            $.ajax({
+                async:false,
+                url:"/student/xuanCourse/"+courseName,
+                data:"pn="+pageNum,
+                type:"get",
+                success:function (result) {
+                    build_users_table(result);
+                    build_page_info(result);
+                    bulid_page_nav(result)
+                }
+            })
+        }
+        $("#courseModal").modal({
+                backdrop: "static"
+            }
+        );
+        //显示表格数据
+        function build_users_table(result) {
+            $("#xuanCourseId").empty();
+            var course = result.extend.page.records;
+            $.each(course,function (index, item) {
+                var id = $("<td></td>").append(item.id);
+                var courseName = $("<td></td>").append(item.courseName);
+                var teacherName = $("<td></td>").append(item.teacherName);
+                var courseCredit = $("<td></td>").append(item.courseCredit);
+                var courseHours = $("<td></td>").append(item.courseHours);
+                var classroomSize = $("<td></td>").append(item.classroomSize);
+                var goTime = $("<td></td>").append(item.goTime);
+                var goPlace = $("<td></td>").append(item.goPlace);
+                var editBtn = $("<button></button>").addClass("btn btn-primary btn-sm edit_btn")
+                    .append($("<span></span>").addClass("fa fa-plus")).append("选课");
+                editBtn.attr("edit-id",item.id);
+
+                var btnTd =$("<td></td>").append(editBtn);
+                $("<tr></tr>").append(id)
+                    .append(courseName)
+                    .append(teacherName)
+                    .append(courseCredit)
+                    .append(courseHours)
+                    .append(classroomSize)
+                    .append(goTime)
+                    .append(goPlace)
+                    .append(btnTd)
+                    .appendTo("#xuanCourseId");
+
+
+            })
+        }
+        //解析显示分页文字信息
+        function build_page_info(result) {
+            $("#page_info_area").empty();
+            $("#page_info_area").append("当前"+result.extend.page.current+"页，总"+
+                result.extend.page.pages+"页，总"+
+                result.extend.page.total+"条记录");
+            totalRecord = result.extend.page.total;
+            currentPage = result.extend.page.pageNum;
+        }
+        //解析显示分页条
+        function bulid_page_nav(result) {
+            var m = result.extend.page;
+            $("#prev").click(function () {
+                if(m.current == 1){
+                    to_page(1);
+                }else{
+                    to_page(m.current-1);
+                }
+            });
+            $("#next").click(function () {
+                if(m.current == m.pages){
+                    to_page(m.pages);
+                }else{
+                    to_page(m.current+1);
+                }
+            });
+        }
+        //判断是否选课
+        $(document).on("click",".edit_btn",function () {
+            var id = $(this).attr("edit-id");
+            if(confirm("确定要选这门课吗")==true){
+                $.ajax({
+                    url:"/student/confirmCourse/"+id,
+                    data:"studentId="+studentId,
+                    type:"GET",
+                    success:function (result) {
+                        alert(result.extend.msg);
+                    }
+                })
+            }
+        })
+    })
+</script>
+</body>
+</html>

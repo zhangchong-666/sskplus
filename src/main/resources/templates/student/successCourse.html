@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="keywords"
+          content="admin, dashboard, bootstrap, template, flat, modern, theme, responsive, fluid, retina, backend, html5, css, css3">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="#" type="image/png">
+
+    <title>student页面 </title>
+    <!--dynamic table-->
+    <link th:href="@{/js/advanced-datatable/css/demo_page.css}" rel="stylesheet"/>
+    <link th:href="@{/js/advanced-datatable/css/demo_table.css}" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/js/data-tables/DT_bootstrap.css}"/>
+
+
+    <div th:include="/student/common::commonheader"></div>
+</head>
+
+<body class="sticky-header">
+
+<section>
+    <!-- left side start-->
+    <div th:replace="/student/common::leftmenu"></div>
+    <!-- left side end-->
+
+    <!-- main content start-->
+    <div class="main-content">
+
+        <!-- header section start-->
+        <div th:replace="/student/common::headermenu"></div>
+        <!-- page heading start-->
+        <div class="page-heading">
+            <h3>
+                课程管理
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="#">课程管理</a>
+                </li>
+                <li>
+                    <a href="#">课程管理列表</a>
+                </li>
+                <li class="active">本学期课程列表</li>
+            </ul>
+        </div>
+        <!-- page heading end-->
+
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-sm-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            本学期课程列表
+                            <span class="tools pull-right">
+                <a href="javascript:;" class="fa fa-chevron-down"></a>
+                <a href="javascript:;" class="fa fa-times"></a>
+             </span>
+                        </header>
+                        <div class="panel-body">
+                            <div class="adv-table">
+                                <div class="span6">
+                                    <div id="dynamic-table_length" class="dataTables_length">
+                                        专业：[[${session.loginUser.userMajor}]]
+                                        当前学期：[[${session.loginUser.currentTerm}]]
+                                    </div>
+                                </div>
+                                <table class="display table table-bordered table-striped" id="dynamic-table">
+                                    <span style="color: red">[[${msg}]]</span>
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>课程名称</th>
+                                        <th>教师名称</th>
+                                        <th>课程学分</th>
+                                        <th>课程学时</th>
+                                        <th>上课时间</th>
+                                        <th>上课地点</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="courseId" role="alert" aria-live="polite" aria-relevant="all">
+                                    <tr class="gradeX odd" th:each="c,sata:${page.records}">
+                                        <td th:text="${sata.count}"></td>
+                                        <td th:text="${c.courseName}"></td>
+                                        <td th:text="${c.teacherName}"></td>
+                                        <td th:text="${c.courseCredit}"></td>
+                                        <td th:text="${c.courseHours}"></td>
+                                        <td th:text="${c.goTime}"></td>
+                                        <td th:text="${c.goPlace}"></td>
+                                        <td th:if="${c.statu==1}"><a th:onclick="return confirm('确定要退选这门课程吗')" th:href="@{/student/tuiKe/{studentId}(studentId=${session.loginUser.userId},id=${c.id})}">退选</a></td>
+                                        <td th:if="${c.statu==5}">必修课(不能退课)</td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                                <div id="fenYe" class="row-fluid">
+                                    <div class="span6">
+                                        <div class="dataTables_info" id="hidden-table-info_info">当前第 [[${page.current}]]
+                                            页 总计 [[${page.pages}]] 页 共 [[${page.total}]]条记录
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="dataTables_paginate paging_bootstrap pagination">
+                                            <ul>
+                                                <li th:class="${page.current==1?'prev disabled':''}"><a th:href="@{/student/successCourse/{studentId}(studentId=${session.loginUser.userId},pn=${page.getCurrent()-1})}">← 前一页</a></li>
+                                                <li th:class="${num==page.current?'active':''}" th:each="num:${#numbers.sequence(1,5)}">
+                                                    <a th:href="@{/student/successCourse/{studentId}(studentId=${session.loginUser.userId},pn=${num})}">[[${num}]]</a>
+                                                </li>
+                                                <li class="next"><a th:href="@{/student/successCourse/{studentId}(studentId=${session.loginUser.userId},pn=${page.getCurrent()+1})}">后一页 → </a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!--body wrapper end-->
+
+
+    </div>
+</section>
+
+<!-- Placed js at the end of the document so the pages load faster -->
+<div th:replace="/student/common::commonscript"></div>
+
+
+<script th:inline="javascript">
+
+</script>
+</body>
+</html>
